@@ -14,6 +14,8 @@ PRODUCTION = {
     "n_snapshots": 40,           # snapshots collected for downstream statistics
     "snapshot_spacing_eddy": 1.0,  # spacing between snapshots, in T_eddy
     "fft_threads": 4,
+    "dtype": "float32",   # working precision of the production run; the
+                          # float64/float32 agreement preflight is in stage 3
 }
 
 # Sanity-check (unforced decay) run

@@ -5,7 +5,7 @@
     "passed": true
   },
   "nonlinear_conservation": {
-    "rel_transfer": 1.2143064339078733e-17,
+    "rel_transfer": 5.204170431033742e-17,
     "threshold": 1e-12,
     "passed": true
   },
@@ -14,12 +14,12 @@
     "nu": 0.02,
     "t_end": 2.0,
     "n_steps": 106,
-    "E_initial": 0.9999999994036857,
-    "E_final": 0.0599671916239599,
-    "energy_budget_rel_error": 8.142198128017501e-05,
+    "E_initial": 0.9999999994036858,
+    "E_final": 0.059967191623959915,
+    "energy_budget_rel_error": 8.142198128028602e-05,
     "budget_threshold": 0.001,
     "monotonic_decay": true,
-    "max_div_normalized": 1.23977595380425e-15,
+    "max_div_normalized": 1.6251487827405651e-15,
     "div_threshold": 1e-10,
     "passed": true
   },
