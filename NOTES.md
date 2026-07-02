@@ -107,3 +107,30 @@ all verified. Findings, all minor and fixed before stage 4 ran:
 - Snapshots stored as compact dealiased spectral coefficients (complex64,
   ~7.5 MB each vs 25 MB physical float32) — lossless w.r.t. the dealiased
   state at float32 precision; loader provided in dns/snapshot_io.py.
+
+## Mid-run reality check (at spin-up end, t=13.9)
+
+Instantaneous state from the checkpoint: E=1.05, ε=0.295≈P ✓,
+k_max·η=1.59 ✓, but **Re_λ=54, not the predicted 73** — the stage-1
+assumptions (L≈1.4, C_ε≈0.45) were optimistic; measured L=1.28,
+C_ε≈0.64. Cross-check against literature: standard 128³ runs quoting
+Re_λ≈70 (e.g. Gotoh et al. 2002) resolve only k_max·η≈1.0; insisting on
+1.5 costs a factor (1.5/1.0)^(2/3)≈1.3 in Re_λ → ≈54. Our number is
+*consistent*, not a solver problem.
+- Consequence: the spectrum has **no constant-slope segment**. Local
+  log-log slope: −1.75 over k∈[3,8], −2.75 over k∈[4,10] (the a priori
+  gate band, which extends into the dissipation roll-off). Compensated
+  magnitudes over k∈[3,9] are 1.3–2.5 ≈ C_K — Kolmogorov-like amplitude,
+  but the −5/3±0.25 gate on k∈[4,10] will very likely FAIL. Stage 4 now
+  reports slopes over several bands to make the band-sensitivity explicit;
+  the a priori gate band is kept as the gate (no goalpost-moving).
+- Escalation analysis using *measured* u′ (not stage-1 assumptions):
+  192³ at matched k_max·η gives Re_λ≈71 for ~9 h — poor value. Forcing
+  only 0<|k|≤1.5 at 128³ raises L→≈2.3, Re_λ→≈80 for ~3 h at the same
+  k_max·η, at the cost of box/L≈2.7 (large-scale confinement — accepted
+  practice in classic intermittency DNS, e.g. Vincent & Meneguzzi). That
+  is the sensible escalation if the gate fails; larger L also widens the
+  physical-space inertial window (L/η 34 → 61), which is what the
+  downstream structure-function phase actually needs.
+- Decision: let the current run finish (valid stationary dataset either
+  way), apply the gate honestly, then escalate.

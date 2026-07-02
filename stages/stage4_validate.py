@@ -153,6 +153,14 @@ def main():
     lo, hi = 4, 10
     band = (k >= lo) & (k <= hi) & (Ek > 0)
     slope, icept = np.polyfit(np.log(k[band]), np.log(Ek[band]), 1)
+    # the spectrum at this Re has no extended straight segment, so a single
+    # band understates the ambiguity: report several bands alongside the gate
+    slope_by_band = {}
+    for blo, bhi in ((3, 6), (3, 8), (4, 10), (5, 12)):
+        bm = (k >= blo) & (k <= bhi) & (Ek > 0)
+        slope_by_band[f"k{blo}-{bhi}"] = float(
+            np.polyfit(np.log(k[bm]), np.log(Ek[bm]), 1)[0]
+        )
     # spread of the fit across individual snapshots -> uncertainty scale
     slopes_i = np.array([
         np.polyfit(np.log(k[band]), np.log(e[band]), 1)[0] for e in Ek_all
@@ -201,6 +209,7 @@ def main():
             "fitted_slope": float(slope),
             "slope_snapshot_std": float(slopes_i.std(ddof=1)),
             "slope_sem": slope_sem,
+            "slope_by_band": slope_by_band,
             "target": target, "tolerance": tol, "passed": slope_ok,
             "caveat": "at Re_lambda ~ 70-90 this is a short approximate "
                       "scaling range (< half a decade), partially supported "
