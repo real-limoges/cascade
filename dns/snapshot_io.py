@@ -17,11 +17,6 @@ import numpy as np
 from scipy import fft as sfft
 
 
-def _sl(kc):
-    # rfft layout: index 0..kc are k=0..kc; index N-kc..N-1 are k=-kc..-1
-    return kc
-
-
 def pack(c, kc):
     """(3,N,N,N//2+1) complex128 -> compact (3,2kc+1,2kc+1,kc+1) complex64."""
     lo = kc + 1

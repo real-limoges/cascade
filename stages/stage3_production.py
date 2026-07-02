@@ -50,6 +50,7 @@ def preflight_precision(p, nsteps=25):
     require the energy/dissipation trajectories to agree closely; guards the
     choice of single precision for the production run."""
     results = {}
+    dt = None
     for dt_name in ("float64", "float32"):
         load_wisdom(WISDOM)
         g = SpectralGrid(p["N"], threads=p["fft_threads"],
@@ -60,7 +61,9 @@ def preflight_precision(p, nsteps=25):
         s.c[:] = isotropic_field(g, E0=p["ic_energy"], kp=p["ic_kp"],
                                  seed=p["seed"]).astype(g.cdt)
         s.rhs(s.c, out=s._k1, measure_umax=True)
-        dt = s.compute_dt()   # fixed dt so both runs follow the same times
+        if dt is None:
+            dt = s.compute_dt()  # from the float64 pass; shared so both
+                                 # trajectories are compared at equal times
         for _ in range(nsteps):
             s.step(dt)
         E, eps = g.energy_and_dissipation(s.c, s.nu)

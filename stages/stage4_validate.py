@@ -42,22 +42,36 @@ SNAPDIR = "data/snapshots"
 TOJSON = lambda o: o.item() if hasattr(o, "item") else str(o)
 
 
+def _tmean(x, t):
+    """Time-weighted mean (trapezoid) — dt is adaptive, so unweighted
+    sample means over steps would be slightly biased."""
+    return float(np.trapezoid(x, t) / (t[-1] - t[0]))
+
+
 def stationarity(ts, spinup_t, P):
     m = ts["t"] > spinup_t
     t, E, eps = ts["t"][m], ts["E"][m], ts["eps"][m]
     window = t[-1] - t[0]
-    Em, epsm = E.mean(), eps.mean()
+    Em, epsm = _tmean(E, t), _tmean(eps, t)
     bal = epsm / P - 1.0
 
-    A = np.vstack([t - t.mean(), np.ones_like(t)]).T
-    slope = np.linalg.lstsq(A, E, rcond=None)[0][0]
+    # weighted linear fit of E(t) (weights = local dt)
+    wt = np.gradient(t)
+    tc = t - np.average(t, weights=wt)
+    slope = np.sum(wt * tc * (E - Em)) / np.sum(wt * tc**2)
     drift = abs(slope) * window / Em
 
     nb = 4
-    blocks = np.array_split(np.arange(t.size), nb)
-    bE = np.array([E[b].mean() for b in blocks])
-    beps = np.array([eps[b].mean() for b in blocks])
-    h1, h2 = E[: t.size // 2].mean(), E[t.size // 2 :].mean()
+    edges = t[0] + window * np.arange(nb + 1) / nb  # equal *time* blocks
+    bE, beps = [], []
+    for i in range(nb):
+        b = (t >= edges[i]) & (t <= edges[i + 1])
+        bE.append(_tmean(E[b], t[b]))
+        beps.append(_tmean(eps[b], t[b]))
+    bE, beps = np.array(bE), np.array(beps)
+    half = t[0] + window / 2
+    h1 = _tmean(E[t <= half], t[t <= half])
+    h2 = _tmean(E[t >= half], t[t >= half])
     sigma_block = bE.std(ddof=1)
     z_halves = abs(h2 - h1) / (sigma_block if sigma_block > 0 else np.inf)
 
@@ -82,15 +96,14 @@ def stationarity(ts, spinup_t, P):
 def snapshot_stats(paths, p):
     g = SpectralGrid(p["N"], threads=p["fft_threads"],
                      planner="FFTW_ESTIMATE", dtype="float64")
-    Ek_sum = None
+    Ek_all = []
     metas, comp_E, corr = [], [], []
     prev = None
     for path in paths:
         coeffs, meta = load_snapshot(path)
         c = unpack(coeffs, p["N"])
         metas.append(meta)
-        Ek = g.spectrum(c)
-        Ek_sum = Ek if Ek_sum is None else Ek_sum + Ek
+        Ek_all.append(g.spectrum(c))
         # component energies (isotropy)
         e = [
             0.5 * float(np.sum(g.w * (c[i].real**2 + c[i].imag**2)))
@@ -105,8 +118,8 @@ def snapshot_stats(paths, p):
             )
             corr.append(num / den)
         prev = c
-    Ek_mean = Ek_sum / len(paths)
-    return g, Ek_mean, metas, np.array(comp_E), np.array(corr)
+    Ek_all = np.array(Ek_all)
+    return g, Ek_all.mean(axis=0), Ek_all, metas, np.array(comp_E), np.array(corr)
 
 
 def main():
@@ -122,7 +135,7 @@ def main():
 
     # --- snapshots
     paths = sorted(glob.glob(os.path.join(SNAPDIR, "snap_*.npz")))
-    g, Ek, metas, comp_E, corr = snapshot_stats(paths, p)
+    g, Ek, Ek_all, metas, comp_E, corr = snapshot_stats(paths, p)
     k = np.arange(len(Ek), dtype=np.float64)
 
     # --- B: resolution from measured dissipation
@@ -140,6 +153,11 @@ def main():
     lo, hi = 4, 10
     band = (k >= lo) & (k <= hi) & (Ek > 0)
     slope, icept = np.polyfit(np.log(k[band]), np.log(Ek[band]), 1)
+    # spread of the fit across individual snapshots -> uncertainty scale
+    slopes_i = np.array([
+        np.polyfit(np.log(k[band]), np.log(e[band]), 1)[0] for e in Ek_all
+    ])
+    slope_sem = float(slopes_i.std(ddof=1) / np.sqrt(len(slopes_i)))
     target, tol = GATES["spectrum_slope_target"], GATES["spectrum_slope_tol"]
     slope_ok = abs(slope - target) <= tol
     # Kolmogorov-compensated spectrum for the record
@@ -181,6 +199,8 @@ def main():
         "spectrum_gate": {
             "fit_band_k": [lo, hi],
             "fitted_slope": float(slope),
+            "slope_snapshot_std": float(slopes_i.std(ddof=1)),
+            "slope_sem": slope_sem,
             "target": target, "tolerance": tol, "passed": slope_ok,
             "caveat": "at Re_lambda ~ 70-90 this is a short approximate "
                       "scaling range (< half a decade), partially supported "

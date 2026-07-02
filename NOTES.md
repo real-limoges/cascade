@@ -70,6 +70,28 @@ All passed (float64):
   float32 vs float64 must agree in E and ε to < 1e-4 (see
   artifacts/precision_preflight.json). Sanity stage remains float64.
 
+## Fresh-context audit (subagent, before stage 4 ran)
+
+An independent fresh-context agent re-derived the numerics with its own
+implementations at N=24. **No confirmed math errors**: RK4 in-place
+algebra (order 4.01 measured), rfft Parseval weights (3e-16), curl and
+projection signs (9e-16), dealias-cube invariance through forced RK4
+steps (exactly 0 outside the cube), exact-P forcing injection
+(0.300000000000000, 1.9e-16), snapshot pack/unpack negative-k mapping
+(bit-exact roundtrip), and the stage-1 arithmetic (1.5887, Re_λ 73.2)
+all verified. Findings, all minor and fixed before stage 4 ran:
+- stage 4 used unweighted sample means over adaptively-spaced steps →
+  switched to time-weighted (trapezoid) means, dt-weighted drift fit, and
+  equal-*time* blocks.
+- IC normalized the model spectrum before truncating at kc (negligible
+  here, latent elsewhere) → normalize over retained shells.
+- precision preflight computed dt separately per precision (1e-7 relative
+  mismatch, contrary to the code comment) → dt now shared.
+- 7-point slope fit had no uncertainty → added per-snapshot slope spread.
+- Disclosed, unchanged: snapshot 0 is taken exactly at the spin-up
+  boundary (least-decorrelated sample; downstream can drop it), and the
+  k_max·η margin over the 1.5 gate is thin if ⟨ε⟩ overshoots P.
+
 ## Production run (stage 3)
 
 - Launched 128³, ν=0.0085, P=0.3, seed 20260702; spin-up 10 large-eddy

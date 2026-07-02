@@ -9,8 +9,8 @@ du/dt = P[u x omega] - nu k^2 u + f        (rotational form; the pressure
   conserves energy exactly, which is used as a correctness check.
 - Time integration: classical explicit RK4 with adaptive CFL time step.
   The viscous term is treated explicitly; stability requires
-  nu * kc^2 * dt well below the RK4 real-axis bound (~2.79), which is
-  enforced by compute_dt().
+  nu * (3 kc^2) * dt (cube-corner mode) below the RK4 real-axis bound
+  (~2.79), which is enforced by compute_dt().
 - Forcing (optional): deterministic fixed-power forcing
       f_hat = (P_inj / (2 E_f)) * u_hat   for 0 < |k| <= k_f,
   which injects energy at exactly the rate P_inj, so statistical
