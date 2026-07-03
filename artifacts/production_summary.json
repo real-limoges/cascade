@@ -1,11 +1,11 @@
 {
   "completed": true,
-  "git_sha": "d1100e384118f508ac4bc8cff9e406822f98fb11",
-  "final_step": 15475,
-  "final_t": 87.63352728097516,
-  "final_tau": 58.00217247697356,
+  "git_sha": "4b6447d71102f78c978e4adecdb4cb29683b0d78",
+  "final_step": 15125,
+  "final_t": 94.02605469248923,
+  "final_tau": 58.00366195197058,
   "spinup_end": {
-    "t": 15.633611216496876,
+    "t": 15.63,
     "step": 2550,
     "tau": 10.0
   },
@@ -25,5 +25,5 @@
     "fft_threads": 4,
     "dtype": "float32"
   },
-  "wall_seconds": 9289.810144662857
+  "wall_seconds": 3638.9903540611267
 }
