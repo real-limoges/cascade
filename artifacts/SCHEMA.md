@@ -45,11 +45,21 @@ Run bookkeeping: `git_sha`, final step/time/τ, `spinup_end` (t, step, τ),
 
 | field | meaning |
 |---|---|
-| `stationarity` | sampling-window diagnostics: `eps_over_P_minus_1` (energy balance; gated), `energy_drift_fraction` (linear E-drift over the window / mean; gated), 4-block means of E and ε, `half_window_z` (reported) |
+| `stationarity` | sampling-window diagnostics (time-weighted): `eps_over_P_minus_1` (energy balance; gated), `energy_drift_fraction` (dt-weighted linear E-drift over the window / mean; gated), 4 equal-time-block means of E and ε, `half_window_z` (reported) |
 | `measured` | snapshot/window measurements: E, ε, u′, η, **kmax_eta** (gated ≥ 1.5), integral scale L, Taylor scale λ, **Re_lambda**, T_eddy, turnovers sampled |
-| `spectrum_gate` | log-log slope of snapshot-averaged E(k) over `fit_band_k`; gated at −5/3 ± 0.25; `caveat` states the honest extent of the scaling range |
+| `spectrum_gate` | log-log slope of snapshot-averaged E(k) over the a priori `fit_band_k` (k∈[3,6] for the k_f=1.5 run); gated at −5/3 ± 0.25; `slope_by_band` shows the band-sensitivity of the curved spectrum; `slope_sem`/`slope_snapshot_std` from per-snapshot fits; `caveat` states the honest extent of the scaling range |
 | `isotropy_and_independence` | component-energy fractions; consecutive-snapshot velocity correlation (supports snapshot-independence claim) |
+| `snapshot_solenoidality` | max/median E_div/E over snapshots; **gated < 1e-4** (regression guard for the forced-divergence instability — see NOTES.md) |
 | `gates`, `validated` | individual gate booleans and their conjunction |
+
+## artifacts/run1_kf2.5/  (archive of the first production configuration)
+
+Same artifact set for run 1 (forcing 0<|k|≤2.5, 40 snapshots): passed
+stationarity/resolution, failed the −5/3 gate (slope −2.70, Re_λ=56).
+`divergence_audit.json` (added post-hoc) lists per-snapshot E_div/E and
+the clean subset (indices 0–28) — its `resolution_validation.json`
+predates the divergence discovery; filter before any reuse. Snapshots in
+`data/snapshots_run1_kf2.5/`.
 
 ## artifacts/energy_spectrum.json  (stage 4)
 
@@ -76,6 +86,10 @@ Velocity snapshots for downstream structure-function statistics. Each file:
 - `meta`: JSON string — snapshot index, t, step, τ, N, kc, ν, P, seed,
   git SHA, and instantaneous integral quantities (E, ε, u′, η, L, λ,
   Re_λ, T_eddy, k_max·η).
+- The validated run-2 set has 48 snapshots spaced 1.0 T_eddy; indices
+  0–25 predate the divergence fix (verified clean, E_div/E ≤ 5e-5),
+  26–47 were sampled after resuming from snapshot 25's re-projected
+  state (E_div/E ~ 1e-12). The trajectory splices at t = 58.24.
 
 Recover physical velocity with
 `dns.snapshot_io.load_velocity(path, N)` → `(3, N, N, N)` float64.

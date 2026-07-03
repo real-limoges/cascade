@@ -219,3 +219,29 @@ Diagnosis chain (all measured, in artifacts/… and this repo's history):
    remaining 22 snapshots. The splice is documented here and in
    PROVENANCE.md; pre- and post-splice samples are the same physical
    trajectory up to removal of an O(5e-5) spurious component.
+6. Post-hoc audit of run 1 (same latent bug, faster α): snapshots 29–39
+   exceed E_div/E=1e-4 (up to 4.8e-2); artifacts/run1_kf2.5/
+   divergence_audit.json lists the clean subset. Run-1's archived
+   validation JSON predates the discovery — its measured values include
+   contaminated late-window data.
+7. In-production verification of the fix: at t=74.5 (where the broken
+   run had E_div≈0.06) the resumed run holds E_div = 9e-17, |U₀| = 0.
+
+## FINAL VERDICT (run 2, 48 snapshots) — ALL FOUR GATES PASS
+
+artifacts/resolution_validation.json, sampling window 48.0 turnovers:
+- stationarity: ⟨ε⟩/P−1 = −0.22% (time-weighted), E-drift 4.6% of mean,
+  block ε means within ±1.7% of P
+- resolution: k_max·η = 1.590
+- spectrum: slope −1.612 ± 0.03 (SEM) on the a priori band k∈[3,6] vs
+  −5/3 ± 0.25 — passes with Δ=0.054. Reported honestly alongside:
+  slope −2.05 on k∈[3,8], −2.69 on k∈[4,10] (curvature), and the caveat
+  that this is a <half-decade approximate scaling range at Re_λ=69.1,
+  bottleneck-assisted, not an asymptotic inertial range.
+- solenoidality: max E_div/E = 4.6e-5 (the pre-fix snapshot 25), median
+  4.7e-12.
+- Measured: Re_λ=69.1 (predicted 81 — C_ε rose to ≈0.72 with the new
+  forcing; prediction error documented), L=1.55 (box/L=4.1, healthier
+  than the 2.7 feared), u′=0.949, T_eddy=1.63.
+- Isotropy: component-energy anisotropy up to 13% (18 forced modes) —
+  reported, not gated; downstream should angle-average.
