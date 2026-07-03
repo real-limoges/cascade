@@ -1,10 +1,46 @@
 # Provenance
 
-Phase 1 of the turbulence-cascade project: build and validate a
-pseudo-spectral DNS of forced homogeneous isotropic turbulence and produce
-independent velocity snapshots for downstream structure-function analysis.
-Structure functions, scaling-exponent fits, and phenomenology comparisons
-are explicitly **not** part of this phase.
+## Executive summary
+
+**What this is.** Phase 1 of the turbulence-cascade project: a
+pseudo-spectral direct numerical simulation of forced homogeneous
+isotropic turbulence (incompressible Navier-Stokes in Fourier space,
+2/3-rule dealiasing, RK4, fixed-power large-scale forcing), built,
+validated, and used to produce a snapshot dataset for downstream
+structure-function analysis. Scaling exponents and model comparisons are
+deliberately out of scope here.
+
+**Outcome: validated.** The production run (128³, ν=0.0085, forcing
+0<|k|≤1.5) passes all four validation gates in
+`artifacts/resolution_validation.json`:
+statistical stationarity (time-weighted ⟨ε⟩/P − 1 = −0.2% over 48 eddy
+turnovers, energy drift 4.6%), resolution (k_max·η = 1.59 ≥ 1.5),
+spectrum slope (−1.61 ± 0.03 on the pre-declared band k∈[3,6], within
+−5/3 ± 0.25), and snapshot solenoidality. Measured Re_λ = 69.
+
+**The one honest caveat.** At 128³ with k_max·η ≥ 1.5 enforced, Re_λ ≈ 70
+is the physical ceiling, so the −5/3 range is a short (< half-decade),
+bottleneck-assisted approximate scaling range — not an asymptotic
+inertial range. A first configuration forced at 0<|k|≤2.5 (Re_λ = 56)
+failed the spectrum gate outright for this reason and is archived with
+its own artifacts under `artifacts/run1_kf2.5/`.
+
+**One solver bug was found, diagnosed, and fixed mid-campaign**: without
+per-step re-projection, roundoff-seeded divergence is amplified
+exponentially by fixed-power forcing and eventually manufactures energy
+(run 2 blew up after 46 clean turnovers). Fixed, regression-tested,
+gated, and fully documented (`NOTES.md`,
+`artifacts/incident_divergence.json`); contaminated samples were deleted
+and re-collected from the last verified-clean state.
+
+**Deliverables.** 48 statistically independent velocity snapshots
+(1 eddy-turnover spacing, ~340 MB, committed; format in
+`artifacts/SCHEMA.md`, loader in `dns/snapshot_io.py`), the four
+re-runnable pipeline stages under `stages/`, all validation artifacts
+under `artifacts/`, and this provenance record. Everything below gives
+the detail behind this summary.
+
+---
 
 > Note: the task brief said this file existed as a template skeleton; the
 > repo's initial commit contained only LICENSE, so it was written from
