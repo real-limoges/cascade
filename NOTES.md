@@ -181,3 +181,41 @@ dataset. Changes for run 2, all made *before* launching:
   reported. Updated feasibility (measured C_ε=0.64, L≈2.3): Re_λ ≈ 81,
   k_max·η = 1.589, strict −5/3 window [3, 4.0] — still nearly empty, so
   the honest expectation remains a marginal gate outcome.
+
+## INCIDENT: forced-divergence instability (run 2, t ≈ 70–88) — found, diagnosed, fixed
+
+Run 2 was statistically stationary through τ≈46 (E≈1.25–1.45, ε≈0.3,
+budget closed to 0.7%), then energy grew monotonically to E=4.2 by t=87
+with implied injection up to 3.6×P — impossible for fixed-power forcing
+in exact arithmetic, so a numerical energy source.
+
+Diagnosis chain (all measured, in artifacts/… and this repo's history):
+1. Budget decomposition at the runaway state (float64): forcing injection
+   exactly 0.300 ✓, viscous −ε ✓, but nonlinear "conservation" sum
+   = **+0.648** — the rotational-form identity Σ c*·P[F(u×ω)] = ∫u·(u×ω)=0
+   holds only for exactly solenoidal states.
+2. Re-running 150 steps from the runaway checkpoint in float64 and at
+   dt/2 reproduced the residual to 5 digits → not precision, not
+   time-integration: the implemented RHS at that state creates energy.
+3. The state had acquired a large divergent component and a mean flow
+   |U|≈1.5: divergence energy across snapshots grew exponentially,
+   2.0e-12 (snap 0) → 1.2 (snap 47), rate ≈ α = P/(2E_f).
+   Mechanism: RK4's floating-point roundoff seeds a divergent component;
+   the state is never re-projected; fixed-power forcing f = α·û_band
+   amplifies the *full* band amplitude — divergent part included — at
+   net rate α − νk² > 0. From float32 seed (~1e-7) this reaches O(1) at
+   t≈70, exactly as observed. float64 would only delay onset (~t≈150);
+   run 1 ended (59 τ) before its latent instability emerged (its
+   snapshots are unaffected at their timescale).
+4. Fix: re-project the state and zero the k=0 mode after every RK4 step
+   (enforcing invariants of the continuous system); divergence monitor +
+   abort in stage 3; new stage-2 regression test (3000-step forced
+   float32 run must keep E_div/E < 1e-9 — passes with the fix; the
+   production run itself is the demonstration that it fails without).
+5. Data handling: snapshots 0–25 verified clean (E_div/E ≤ 5e-5 at snap
+   25, ~1e-9 at snap 10); snapshots 26–47 deleted as contaminated;
+   time series truncated to t ≤ 58.24; production resumed from snapshot
+   25's re-projected state with the fixed solver to collect the
+   remaining 22 snapshots. The splice is documented here and in
+   PROVENANCE.md; pre- and post-splice samples are the same physical
+   trajectory up to removal of an O(5e-5) spurious component.
