@@ -160,3 +160,24 @@ Full results: artifacts/run1_kf2.5/resolution_validation.json.
   128³ with k_f≤1.5 keeps all constraints and raises Re_λ to ≈80,
   L/η 34→61, but the defensible-band slope is still projected ≈ −1.75
   to −1.95 (edge of tolerance) — better dataset, uncertain gate.
+
+## Run 2 launched (k_f ≤ 1.5, 48 snapshots)
+
+Attempted to put the fork (accept run 1 / k_f=1.5 rerun / relax k_max·η /
+256³) to the user; the question tool failed with a transport error and the
+user said to continue, so proceeded with the recommended option — the only
+one that keeps every stated constraint while materially improving the
+dataset. Changes for run 2, all made *before* launching:
+- k_force 2.5 → 1.5 (18 forced modes, k²∈{1,2}); ic_kp 2.5; seed unchanged.
+- 48 snapshots instead of 40: box/L drops to ≈2.7, so each snapshot holds
+  ~20 (not ~100) independent integral volumes; 48×20 ≈ 10³ independent
+  large-scale samples. Box confinement at box/L≈2.7 is the standard cost
+  of forcing at the lowest shells (cf. classic intermittency DNS); it
+  mainly degrades statistics at separations r ≳ L, which downstream
+  should avoid anyway.
+- First snapshot now one spacing after the spin-up boundary.
+- A priori spectrum gate band for run 2, declared before the run: k∈[3,6]
+  (above forcing influence 2k_f=3; kη ≤ 0.23). Multi-band slopes still
+  reported. Updated feasibility (measured C_ε=0.64, L≈2.3): Re_λ ≈ 81,
+  k_max·η = 1.589, strict −5/3 window [3, 4.0] — still nearly empty, so
+  the honest expectation remains a marginal gate outcome.
