@@ -15,6 +15,11 @@ du/dt = P[u x omega] - nu k^2 u + f        (rotational form; the pressure
       f_hat = (P_inj / (2 E_f)) * u_hat   for 0 < |k| <= k_f,
   which injects energy at exactly the rate P_inj, so statistical
   stationarity implies <eps> = P_inj.
+- The state is re-projected (and the k=0 mode zeroed) after every step:
+  the energy-conservation identity of the rotational form holds only for
+  exactly solenoidal states, and the fixed-power forcing amplifies any
+  divergent roundoff noise in the forced band exponentially. See
+  divergence_energy() for the monitor.
 
 The hot path avoids temporaries: FFT plans are bound to dedicated aligned
 buffers (FFTW's multi-dimensional c2r destroys its input, so the state is
@@ -208,10 +213,31 @@ class Solver:
         k1 *= dt / 6.0
         acc += k1
         np.add(c0, acc, out=c)
+        # Enforce the invariants of the continuous system that floating-point
+        # arithmetic erodes: exact solenoidality and zero mean flow. Without
+        # this, roundoff seeds a divergent component that the fixed-power
+        # forcing amplifies exponentially at rate ~alpha = P/(2 E_f) (it
+        # forces the *full* band-mode amplitudes, divergent part included),
+        # which eventually destroys the run — observed as a spurious energy
+        # source once E_div reaches O(1e-3) of E.
+        self.g.project(c)
+        c[:, 0, 0, 0] = 0.0
         self.t += dt
         self.step_count += 1
 
     # --------------------------------------------------------- diagnostics
+    def divergence_energy(self):
+        """Energy in the divergent (k-parallel) component of the state —
+        should stay at single-step roundoff level (~1e-12 in float32)."""
+        g, c = self.g, self.c
+        div = (g.kx * c[0] + g.ky * c[1] + g.kz * c[2]) / np.sqrt(
+            g.k2_nozero
+        )
+        return 0.5 * float(
+            np.sum(g.w * (div.real.astype(np.float64) ** 2
+                          + div.imag.astype(np.float64) ** 2))
+        )
+
     def diagnostics(self):
         E, eps = self.g.energy_and_dissipation(self.c, self.nu)
         return {

@@ -100,6 +100,30 @@ def check_decay(g, c0):
     }
 
 
+def check_forced_divergence_control():
+    """Regression test for the forced-divergence instability: fixed-power
+    forcing amplifies any divergent component of the band modes at rate
+    ~P/(2 E_f), so roundoff-seeded divergence grows exponentially unless
+    the state is re-projected every step. Run a float32 forced run at 32^3
+    for 3000 steps and require the divergent-component energy to stay at
+    the roundoff floor."""
+    N = 32
+    g = SpectralGrid(N, planner="FFTW_ESTIMATE", dtype="float32")
+    s = Solver(g, nu=0.02, forcing_power=0.3, k_force=1.5, cfl=0.8)
+    s.c[:] = isotropic_field(g, E0=1.3, kp=2.5, seed=99)
+    s.rhs(s.c, out=s._k1, measure_umax=True)
+    max_rel = 0.0
+    for _ in range(3000):
+        s.step(s.compute_dt())
+        if s.step_count % 200 == 0:
+            max_rel = max(max_rel,
+                          s.divergence_energy() / g.energy(s.c))
+    return {
+        "n_steps": 3000, "max_Ediv_over_E": max_rel,
+        "threshold": 1e-9, "passed": bool(max_rel < 1e-9),
+    }
+
+
 def main():
     p = SANITY
     g = SpectralGrid(p["N"], threads=p["fft_threads"], planner="FFTW_MEASURE")
@@ -109,6 +133,7 @@ def main():
         "exact_viscous_decay": check_exact_viscous_decay(),
         "nonlinear_conservation": check_nonlinear_conservation(g, c0),
         "decay_energy_budget": check_decay(g, c0),
+        "forced_divergence_control": check_forced_divergence_control(),
     }
     results["all_passed"] = all(r["passed"] for r in results.values())
 

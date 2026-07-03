@@ -5,7 +5,7 @@
     "passed": true
   },
   "nonlinear_conservation": {
-    "rel_transfer": 5.204170431033742e-17,
+    "rel_transfer": 1.0408340855860843e-17,
     "threshold": 1e-12,
     "passed": true
   },
@@ -14,13 +14,19 @@
     "nu": 0.02,
     "t_end": 2.0,
     "n_steps": 106,
-    "E_initial": 0.9999999994036858,
-    "E_final": 0.059967191623959915,
-    "energy_budget_rel_error": 8.142198128028602e-05,
+    "E_initial": 1.0,
+    "E_final": 0.05996719164898992,
+    "energy_budget_rel_error": 8.14219812593775e-05,
     "budget_threshold": 0.001,
     "monotonic_decay": true,
-    "max_div_normalized": 1.6251487827405651e-15,
+    "max_div_normalized": 2.1953493006305416e-16,
     "div_threshold": 1e-10,
+    "passed": true
+  },
+  "forced_divergence_control": {
+    "n_steps": 3000,
+    "max_Ediv_over_E": 5.909550351367747e-17,
+    "threshold": 1e-09,
     "passed": true
   },
   "all_passed": true

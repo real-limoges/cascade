@@ -164,6 +164,12 @@ def main():
         if not np.isfinite(E):
             save_ts()
             sys.exit(f"ABORT: non-finite energy at step {s.step_count}")
+        if s.step_count % 200 == 0:
+            ediv = s.divergence_energy()
+            if ediv > 1e-8 * E:
+                save_ts()
+                sys.exit(f"ABORT: divergent-component energy {ediv:.3e} "
+                         f"(E={E:.3e}) at step {s.step_count}")
         series["t"].append(s.t); series["dt"].append(dt)
         series["E"].append(E); series["eps"].append(eps)
         series["Ef"].append(s.band_energy(s.c))
