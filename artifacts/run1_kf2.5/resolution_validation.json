@@ -1,0 +1,98 @@
+{
+  "params": {
+    "N": 128,
+    "nu": 0.0085,
+    "forcing_power": 0.3,
+    "k_force": 2.5,
+    "cfl": 0.8,
+    "ic_energy": 1.5,
+    "ic_kp": 3.0,
+    "seed": 20260702,
+    "spinup_eddy_times": 10.0,
+    "n_snapshots": 40,
+    "snapshot_spacing_eddy": 1.0,
+    "fft_threads": 4,
+    "dtype": "float32"
+  },
+  "git_sha": "666416b23d97628120b6865dc4579a0a93099ad2",
+  "n_snapshots": 40,
+  "snapshot_spacing_eddy_turnovers": 1.0,
+  "stationarity": {
+    "window_t": [
+      13.862430486253041,
+      72.78674424091052
+    ],
+    "window_eddy_turnovers": 38.99769469693507,
+    "mean_E": 1.0935139826333256,
+    "mean_eps": 0.3012478248781478,
+    "eps_over_P_minus_1": 0.004159416260492543,
+    "eps_balance_tol": 0.1,
+    "energy_drift_fraction": 0.017851572735322487,
+    "energy_drift_tol": 0.1,
+    "block_means_E": [
+      1.0947879719497657,
+      1.0936295429531482,
+      1.1171479753136202,
+      1.0684474818161247
+    ],
+    "block_means_eps": [
+      0.29156763356424187,
+      0.3045441545828037,
+      0.30154281409936934,
+      0.3073466912333076
+    ],
+    "block_scatter_E_rel": 0.018202049519242224,
+    "half_window_z": 0.07195449126288533,
+    "passed": true
+  },
+  "measured": {
+    "E": 1.0953710755926673,
+    "eps": 0.3012478248781478,
+    "urms": 0.8545451326456929,
+    "eta": 0.037786199599321946,
+    "kmax_eta": 1.5870203831715217,
+    "L_integral": 1.2882452169612832,
+    "lambda_taylor": 0.5559402746792458,
+    "Re_lambda": 55.89130067868929,
+    "T_eddy": 1.5075215664418382,
+    "eddy_turnovers_sampled": 38.99769469693507
+  },
+  "spectrum_gate": {
+    "fit_band_k": [
+      4,
+      10
+    ],
+    "fitted_slope": -2.699015864107842,
+    "slope_snapshot_std": 0.10295752326701185,
+    "slope_sem": 0.016279013788676886,
+    "slope_by_band": {
+      "k3-6": -1.5461994024264394,
+      "k3-8": -2.0143711516453484,
+      "k4-10": -2.699015864107842,
+      "k5-12": -3.0669516999386297
+    },
+    "target": -1.6666666666666667,
+    "tolerance": 0.25,
+    "passed": false,
+    "caveat": "at Re_lambda ~ 70-90 this is a short approximate scaling range (< half a decade), partially supported by the spectral bottleneck; it is NOT an asymptotic inertial range"
+  },
+  "isotropy_and_independence": {
+    "mean_component_energy_fractions": [
+      0.33822986613206824,
+      0.3185976300061023,
+      0.34317250386182924
+    ],
+    "max_anisotropy_pct": 4.4207109981693025,
+    "consecutive_snapshot_velocity_correlation": {
+      "mean": 0.36757209297473836,
+      "max": 0.4181787821029499,
+      "note": "whole-field correlation is dominated by the forced large scales; inertial-range increments decorrelate faster than this"
+    }
+  },
+  "gates": {
+    "stationarity": true,
+    "kmax_eta": true,
+    "spectrum_slope": false
+  },
+  "validated": false
+}

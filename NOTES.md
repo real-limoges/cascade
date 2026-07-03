@@ -134,3 +134,29 @@ Re_λ≈70 (e.g. Gotoh et al. 2002) resolve only k_max·η≈1.0; insisting on
   downstream structure-function phase actually needs.
 - Decision: let the current run finish (valid stationary dataset either
   way), apply the gate honestly, then escalate.
+
+## 2026-07-03 — Run 1 (k_f=2.5) verdict: stationary and resolved, −5/3 gate FAILED
+
+Full results: artifacts/run1_kf2.5/resolution_validation.json.
+- Stationarity PASSED: 39 turnovers sampled, time-weighted ⟨ε⟩/P−1 =
+  **+0.4%**, E-drift 1.8% of mean over the window, 4-block ε means within
+  ±3% of P, component anisotropy ≤ 4.4%. This is an explicit diagnostic,
+  not "it looked flat".
+- Resolution PASSED: k_max·η = 1.587 (measured ε).
+- Spectrum gate FAILED: slope −2.70±0.02 on the a priori band k∈[4,10]
+  vs target −5/3±0.25. Band sweep: −1.55 (k3–6, forcing-contaminated),
+  −2.01 (k3–8), −3.07 (k5–12). Measured Re_λ = 55.9, L=1.29, u′=0.85.
+- Consecutive-snapshot whole-field correlation ρ ≈ 0.37 at 1 T_eddy
+  spacing (large-scale dominated), consistent with "approximately
+  independent" sampling.
+- **Root cause, now demonstrated not just suspected**: k_max·η ≥ 1.5 at
+  128³ fixes η = 0.038, so the dissipative roll-off begins at
+  k ≈ 0.13/η ≈ 3.4, while forcing influence extends to k ≈ 2·k_f ≈ 5.
+  The window where −5/3 could live, [2k_f, 0.13/η], is empty. The two
+  requirements (k_max·η ≥ 1.5 at 128³ and a visible −5/3 range) are
+  mutually incompatible in this box regardless of forcing details.
+  Escalations that fix it genuinely (256³ at k_f≤1.5: Re_λ≈125, real
+  short inertial range, k_max·η=1.5) cost ~2 days of wall time here.
+  128³ with k_f≤1.5 keeps all constraints and raises Re_λ to ≈80,
+  L/η 34→61, but the defensible-band slope is still projected ≈ −1.75
+  to −1.95 (edge of tolerance) — better dataset, uncertain gate.
