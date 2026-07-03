@@ -1,0 +1,29 @@
+{
+  "completed": true,
+  "git_sha": "4b6447d71102f78c978e4adecdb4cb29683b0d78",
+  "final_step": 15125,
+  "final_t": 94.02605469248923,
+  "final_tau": 58.00366195197058,
+  "spinup_end": {
+    "t": 15.63,
+    "step": 2550,
+    "tau": 10.0
+  },
+  "n_snapshots": 48,
+  "params": {
+    "N": 128,
+    "nu": 0.0085,
+    "forcing_power": 0.3,
+    "k_force": 1.5,
+    "cfl": 0.8,
+    "ic_energy": 1.5,
+    "ic_kp": 2.5,
+    "seed": 20260702,
+    "spinup_eddy_times": 10.0,
+    "n_snapshots": 48,
+    "snapshot_spacing_eddy": 1.0,
+    "fft_threads": 4,
+    "dtype": "float32"
+  },
+  "wall_seconds": 3638.9903540611267
+}

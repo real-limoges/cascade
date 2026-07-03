@@ -1,0 +1,104 @@
+{
+  "what": "Artifact record of the forced-divergence instability in run 2 (full narrative in NOTES.md). Contaminated snapshots 26-37 were recovered from git (`git show 4b6447d^:...`) and their divergence recomputed here; snapshots 38-47 of the broken segment were never committed, so their values below come from live-session measurements made before deletion.",
+  "contaminated_snapshots_recovered_from_git": [
+    {
+      "index": 26,
+      "t": 59.83407416542674,
+      "Ediv_over_E": 8.882814942103542e-05,
+      "U0_norm": 0.011766761188731953
+    },
+    {
+      "index": 27,
+      "t": 61.38762077917519,
+      "Ediv_over_E": 0.00018585766653037738,
+      "U0_norm": 0.0225853403288734
+    },
+    {
+      "index": 28,
+      "t": 62.923690794379844,
+      "Ediv_over_E": 0.0004228561153349319,
+      "U0_norm": 0.0321329497438056
+    },
+    {
+      "index": 29,
+      "t": 64.50096497287376,
+      "Ediv_over_E": 0.000999909897791783,
+      "U0_norm": 0.05067548176385696
+    },
+    {
+      "index": 30,
+      "t": 66.11017428030495,
+      "Ediv_over_E": 0.0022493595270345243,
+      "U0_norm": 0.09047915152963643
+    },
+    {
+      "index": 31,
+      "t": 67.86313939326234,
+      "Ediv_over_E": 0.00426777493100386,
+      "U0_norm": 0.13090088138584033
+    },
+    {
+      "index": 32,
+      "t": 69.62570817315505,
+      "Ediv_over_E": 0.006979152623493799,
+      "U0_norm": 0.13448021474978
+    },
+    {
+      "index": 33,
+      "t": 71.25232302064434,
+      "Ediv_over_E": 0.011891893277978198,
+      "U0_norm": 0.09155731254101461
+    },
+    {
+      "index": 34,
+      "t": 72.74441099000602,
+      "Ediv_over_E": 0.02185991893253405,
+      "U0_norm": 0.05791054588827839
+    },
+    {
+      "index": 35,
+      "t": 74.23474352958002,
+      "Ediv_over_E": 0.04228800561723867,
+      "U0_norm": 0.10130274102919658
+    },
+    {
+      "index": 36,
+      "t": 75.80401057499212,
+      "Ediv_over_E": 0.06893921863546171,
+      "U0_norm": 0.23808310595252277
+    }
+  ],
+  "session_measured_before_deletion": [
+    {
+      "index": 40,
+      "t": 81.42,
+      "Ediv_absolute": 0.3958
+    },
+    {
+      "index": 44,
+      "t": 85.34,
+      "Ediv_absolute": 0.8857
+    },
+    {
+      "index": 47,
+      "t": 87.63,
+      "Ediv_absolute": 1.193
+    }
+  ],
+  "fixed_run_final_checkpoint": {
+    "t": 94.02605469248923,
+    "Ediv_over_E": 5.283190356185477e-17,
+    "U0_norm": 0.0
+  },
+  "session_measurements_not_reproducible_from_artifacts": {
+    "note": "measured during live diagnosis at the (since overwritten) runaway checkpoint t=86.43; recorded for the narrative",
+    "nonlinear_conservation_residual_float64": 0.6477956816895423,
+    "forcing_injection_float64": 0.3,
+    "budget_residual_150steps_precision_and_dt_independent": {
+      "float32_cfl0.8": 0.34291,
+      "float64_cfl0.8": 0.34291,
+      "float32_cfl0.4_300steps": 0.34293
+    },
+    "implied_injection_rate_t82_86": 1.089
+  }
+}

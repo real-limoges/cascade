@@ -1,0 +1,33 @@
+{
+  "exact_viscous_decay": {
+    "rel_error": 1.7110613958826558e-12,
+    "threshold": 1e-08,
+    "passed": true
+  },
+  "nonlinear_conservation": {
+    "rel_transfer": 1.0408340855860843e-17,
+    "threshold": 1e-12,
+    "passed": true
+  },
+  "decay_energy_budget": {
+    "N": 64,
+    "nu": 0.02,
+    "t_end": 2.0,
+    "n_steps": 106,
+    "E_initial": 1.0,
+    "E_final": 0.05996719164898992,
+    "energy_budget_rel_error": 8.14219812593775e-05,
+    "budget_threshold": 0.001,
+    "monotonic_decay": true,
+    "max_div_normalized": 2.1953493006305416e-16,
+    "div_threshold": 1e-10,
+    "passed": true
+  },
+  "forced_divergence_control": {
+    "n_steps": 3000,
+    "max_Ediv_over_E": 5.909550351367747e-17,
+    "threshold": 1e-09,
+    "passed": true
+  },
+  "all_passed": true
+}

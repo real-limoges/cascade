@@ -1,0 +1,5 @@
+data/checkpoint.npz
+data/fftw_wisdom.pkl
+data/*.log
+__pycache__/
+*.pyc
