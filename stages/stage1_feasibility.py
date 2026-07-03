@@ -17,11 +17,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dns.params import PRODUCTION, GATES
 
-C_EPS = 0.45   # dissipation coefficient eps ~ C_eps u'^3 / L (empirical, HIT)
-L_EST = 1.4    # a priori integral-scale estimate for forcing at |k|<=2.5 in a 2pi box
+C_EPS = 0.64   # dissipation coefficient eps ~ C_eps u'^3 / L
+               # (updated to the value MEASURED in run 1; 0.45 was the
+               # a priori guess and overpredicted Re_lambda by ~30%)
+L_EST = 2.3    # integral-scale estimate for forcing at |k|<=1.5 in a 2pi box
+               # (run 1, forced at |k|<=2.5, measured L=1.29)
 
 
-def feasibility(N, nu, P):
+def feasibility(N, nu, P, k_force=1.5):
     kc = N // 3                      # 2/3-rule max retained wavenumber
     eta = (nu**3 / P) ** 0.25        # exact at stationarity since <eps>=P
     kmax_eta = kc * eta
@@ -29,9 +32,9 @@ def feasibility(N, nu, P):
     lam = (15.0 * nu / P) ** 0.5 * urms
     re_lambda = urms * lam / nu
     Re_L = urms * L_EST / nu
-    # crude inertial-range bounds: above the forcing band, below the
+    # crude inertial-range bounds: above the forcing influence, below the
     # onset of the dissipative roll-off (k*eta ~ 0.15)
-    k_lo = 4.0
+    k_lo = 2.0 * k_force
     k_hi = 0.15 / eta
     return {
         "N": N, "kc": kc, "nu": nu, "forcing_power": P,

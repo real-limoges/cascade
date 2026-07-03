@@ -150,7 +150,11 @@ def main():
     L_int = 3 * np.pi / (4 * E_tot) * float(np.sum(Ek[1:] / k[1:]))
 
     # --- C: spectrum slope over the a priori band
-    lo, hi = 4, 10
+    # a priori fit band, declared before run 2 was started: above the
+    # forcing influence (k >= 2*k_force = 3) and not deeper into the
+    # dissipative roll-off than k*eta ~ 0.23 (k <= 6 at the predicted eta).
+    # Run 1 (k_force=2.5) used k in [4,10]; see NOTES.md.
+    lo, hi = 3, 6
     band = (k >= lo) & (k <= hi) & (Ek > 0)
     slope, icept = np.polyfit(np.log(k[band]), np.log(Ek[band]), 1)
     # the spectrum at this Re has no extended straight segment, so a single

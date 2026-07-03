@@ -111,7 +111,9 @@ def main():
     series = {k: [] for k in ("t", "dt", "E", "eps", "Ef", "umax", "tau")}
     tau = 0.0            # elapsed large-eddy turnovers
     n_snaps = 0
-    next_snap_tau = p["spinup_eddy_times"]
+    # first snapshot one full spacing *after* the spin-up boundary, so no
+    # sample sits exactly at the least-decorrelated instant (audit finding)
+    next_snap_tau = p["spinup_eddy_times"] + p["snapshot_spacing_eddy"]
     spinup_end = {"t": None, "step": None, "tau": p["spinup_eddy_times"]}
 
     if os.path.exists(CKPT):

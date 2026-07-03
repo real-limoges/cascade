@@ -1,0 +1,70 @@
+{
+  "chosen": {
+    "N": 128,
+    "kc": 42,
+    "nu": 0.0085,
+    "forcing_power": 0.3,
+    "eta_predicted": 0.037825430593732765,
+    "kmax_eta_predicted": 1.588668084936776,
+    "urms_predicted": 1.025391482425587,
+    "Re_lambda_predicted": 80.64082282457215,
+    "Re_integral_predicted": 277.4588717151588,
+    "inertial_range_k": [
+      3.0,
+      3.965586052703211
+    ],
+    "inertial_range_decades": 0.12118612373021483,
+    "assumptions": {
+      "C_eps": 0.64,
+      "L_integral_estimate": 2.3
+    }
+  },
+  "alternatives_same_resolution_margin": [
+    {
+      "N": 192,
+      "kc": 64,
+      "nu": 0.004847427782126808,
+      "forcing_power": 0.3,
+      "eta_predicted": 0.02482293882713713,
+      "kmax_eta_predicted": 1.5886680849367762,
+      "urms_predicted": 1.025391482425587,
+      "Re_lambda_predicted": 106.78462811572577,
+      "Re_integral_predicted": 486.5261568773908,
+      "inertial_range_k": [
+        3.0,
+        6.042797794595369
+      ],
+      "inertial_range_decades": 0.30411680731620155,
+      "assumptions": {
+        "C_eps": 0.64,
+        "L_integral_estimate": 2.3
+      }
+    },
+    {
+      "N": 256,
+      "kc": 85,
+      "nu": 0.0033204178913205516,
+      "forcing_power": 0.3,
+      "eta_predicted": 0.018690212763962075,
+      "kmax_eta_predicted": 1.5886680849367765,
+      "urms_predicted": 1.025391482425587,
+      "Re_lambda_predicted": 129.02326884687756,
+      "Re_integral_predicted": 710.2721665678349,
+      "inertial_range_k": [
+        3.0,
+        8.025590820946974
+      ],
+      "inertial_range_decades": 0.42735575904660705,
+      "assumptions": {
+        "C_eps": 0.64,
+        "L_integral_estimate": 2.3
+      }
+    }
+  ],
+  "gate_kmax_eta": {
+    "threshold": 1.5,
+    "value": 1.588668084936776,
+    "passed": true
+  },
+  "honest_summary": "At 128^3 with nu=0.0085, P=0.3: k_max*eta = 1.589, predicted Re_lambda ~ 81. At this Reynolds number there is no asymptotic inertial range; expect only a short (< half-decade) approximate -5/3 scaling range roughly k in [4, 10], partially supported by the spectral bottleneck. A decade of true inertial range would need Re_lambda >~ 300 (>= 512^3), which is not feasible on this hardware."
+}
