@@ -67,15 +67,16 @@ def main():
         "value": report["chosen"]["kmax_eta_predicted"],
         "passed": ok,
     }
+    klo, khi = report["chosen"]["inertial_range_k"]
     report["honest_summary"] = (
         f"At {p['N']}^3 with nu={p['nu']}, P={p['forcing_power']}: "
         f"k_max*eta = {report['chosen']['kmax_eta_predicted']:.3f}, "
         f"predicted Re_lambda ~ {report['chosen']['Re_lambda_predicted']:.0f}. "
-        "At this Reynolds number there is no asymptotic inertial range; "
-        "expect only a short (< half-decade) approximate -5/3 scaling range "
-        "roughly k in [4, 10], partially supported by the spectral bottleneck. "
-        "A decade of true inertial range would need Re_lambda >~ 300 "
-        "(>= 512^3), which is not feasible on this hardware."
+        "At this Reynolds number there is no asymptotic inertial range: the "
+        f"strict -5/3 window is only k in [{klo:.1f}, {khi:.1f}]; any fitted "
+        "scaling range is short (< half a decade) and partially supported by "
+        "the spectral bottleneck. A decade of true inertial range would need "
+        "Re_lambda >~ 300 (>= 512^3), which is not feasible on this hardware."
     )
 
     os.makedirs("artifacts", exist_ok=True)

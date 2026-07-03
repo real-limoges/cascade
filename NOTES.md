@@ -224,8 +224,14 @@ Diagnosis chain (all measured, in artifacts/… and this repo's history):
    divergence_audit.json lists the clean subset. Run-1's archived
    validation JSON predates the discovery — its measured values include
    contaminated late-window data.
-7. In-production verification of the fix: at t=74.5 (where the broken
-   run had E_div≈0.06) the resumed run holds E_div = 9e-17, |U₀| = 0.
+7. In-production verification of the fix (artifact:
+   artifacts/incident_divergence.json): the resumed run's final
+   checkpoint (t=94.03) has E_div/E = 5.3e-17 and |U₀| = 0 exactly —
+   where the broken run had E_div ≈ 0.06 by t=74. That artifact also
+   preserves the contaminated snapshots' divergence values (26–37
+   recomputed from blobs recovered out of git history; 38–47 from
+   live-session measurements) and the runaway-state budget decomposition
+   numbers, labeled by provenance.
 
 ## FINAL VERDICT (run 2, 48 snapshots) — ALL FOUR GATES PASS
 

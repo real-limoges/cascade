@@ -66,5 +66,5 @@
     "value": 1.588668084936776,
     "passed": true
   },
-  "honest_summary": "At 128^3 with nu=0.0085, P=0.3: k_max*eta = 1.589, predicted Re_lambda ~ 81. At this Reynolds number there is no asymptotic inertial range; expect only a short (< half-decade) approximate -5/3 scaling range roughly k in [4, 10], partially supported by the spectral bottleneck. A decade of true inertial range would need Re_lambda >~ 300 (>= 512^3), which is not feasible on this hardware."
+  "honest_summary": "At 128^3 with nu=0.0085, P=0.3: k_max*eta = 1.589, predicted Re_lambda ~ 81. At this Reynolds number there is no asymptotic inertial range: the strict -5/3 window is only k in [3.0, 4.0]; any fitted scaling range is short (< half a decade) and partially supported by the spectral bottleneck. A decade of true inertial range would need Re_lambda >~ 300 (>= 512^3), which is not feasible on this hardware."
 }

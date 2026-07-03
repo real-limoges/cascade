@@ -27,7 +27,7 @@ are explicitly **not** part of this phase.
   4. `python -m stages.stage4_validate` — stationarity/resolution/spectrum/
      solenoidality gates → `artifacts/resolution_validation.json`
 - Code versions for the validated dataset: snapshots 0–25 were produced by
-  the solver at commit `14676a8` (pre-fix; verified clean, E_div/E ≤ 5e-5);
+  the solver at commit `d1100e3` (pre-fix; verified clean, E_div/E ≤ 5e-5);
   snapshots 26–47 and the final validation at commit `4b6447d`
   (divergence fix). Every snapshot's metadata records its `git_sha`.
 

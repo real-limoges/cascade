@@ -89,7 +89,8 @@ Velocity snapshots for downstream structure-function statistics. Each file:
 - The validated run-2 set has 48 snapshots spaced 1.0 T_eddy; indices
   0–25 predate the divergence fix (verified clean, E_div/E ≤ 5e-5),
   26–47 were sampled after resuming from snapshot 25's re-projected
-  state (E_div/E ~ 1e-12). The trajectory splices at t = 58.24.
+  state (E_div/E ~ 1e-16, roundoff floor). The trajectory splices at
+  t = 58.24.
 
 Recover physical velocity with
 `dns.snapshot_io.load_velocity(path, N)` → `(3, N, N, N)` float64.
