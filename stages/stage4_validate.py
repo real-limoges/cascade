@@ -97,13 +97,18 @@ def snapshot_stats(paths, p):
     g = SpectralGrid(p["N"], threads=p["fft_threads"],
                      planner="FFTW_ESTIMATE", dtype="float64")
     Ek_all = []
-    metas, comp_E, corr = [], [], []
+    metas, comp_E, corr, ediv_rel = [], [], [], []
     prev = None
     for path in paths:
         coeffs, meta = load_snapshot(path)
         c = unpack(coeffs, p["N"])
         metas.append(meta)
         Ek_all.append(g.spectrum(c))
+        # solenoidality (guards against the forced-divergence instability)
+        div = (g.kx * c[0] + g.ky * c[1] + g.kz * c[2]) / np.sqrt(g.k2_nozero)
+        ediv_rel.append(
+            0.5 * float(np.sum(g.w * np.abs(div) ** 2)) / g.energy(c)
+        )
         # component energies (isotropy)
         e = [
             0.5 * float(np.sum(g.w * (c[i].real**2 + c[i].imag**2)))
@@ -119,7 +124,8 @@ def snapshot_stats(paths, p):
             corr.append(num / den)
         prev = c
     Ek_all = np.array(Ek_all)
-    return g, Ek_all.mean(axis=0), Ek_all, metas, np.array(comp_E), np.array(corr)
+    return (g, Ek_all.mean(axis=0), Ek_all, metas, np.array(comp_E),
+            np.array(corr), np.array(ediv_rel))
 
 
 def main():
@@ -135,7 +141,7 @@ def main():
 
     # --- snapshots
     paths = sorted(glob.glob(os.path.join(SNAPDIR, "snap_*.npz")))
-    g, Ek, Ek_all, metas, comp_E, corr = snapshot_stats(paths, p)
+    g, Ek, Ek_all, metas, comp_E, corr, ediv_rel = snapshot_stats(paths, p)
     k = np.arange(len(Ek), dtype=np.float64)
 
     # --- B: resolution from measured dissipation
@@ -194,6 +200,7 @@ def main():
         "stationarity": stat["passed"],
         "kmax_eta": bool(kmax_eta >= GATES["kmax_eta_min"]),
         "spectrum_slope": bool(slope_ok),
+        "snapshots_solenoidal": bool(np.max(ediv_rel) < 1e-4),
     }
     result = {
         "params": p,
@@ -221,6 +228,11 @@ def main():
                       "inertial range",
         },
         "isotropy_and_independence": iso,
+        "snapshot_solenoidality": {
+            "max_Ediv_over_E": float(np.max(ediv_rel)),
+            "median_Ediv_over_E": float(np.median(ediv_rel)),
+            "threshold": 1e-4,
+        },
         "gates": gates,
         "validated": bool(all(gates.values())),
     }
